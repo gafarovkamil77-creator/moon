@@ -2,7 +2,9 @@ export const G0 = 9.80665;
 export const PRESETS = {
   training: { altitude: 700, vx: 0, vy: -12, fuel: 820, dryMass: 1800, maxThrust: 12000, isp: 305, gravity: 1.625, x: 0 },
   approach: { altitude: 1600, vx: 18, vy: -28, fuel: 1000, dryMass: 1800, maxThrust: 12000, isp: 305, gravity: 1.625, x: -450 },
-  hard: { altitude: 900, vx: 24, vy: -38, fuel: 450, dryMass: 1800, maxThrust: 12000, isp: 305, gravity: 1.625, x: -300 }
+  hard: { altitude: 900, vx: 24, vy: -38, fuel: 450, dryMass: 1800, maxThrust: 12000, isp: 305, gravity: 1.625, x: -300 },
+  precision: { altitude: 650, vx: -16, vy: -18, fuel: 620, dryMass: 1800, maxThrust: 12000, isp: 305, gravity: 1.625, x: 280, padRadius: 12 },
+  rescue: { altitude: 450, vx: -12, vy: -25, fuel: 70, dryMass: 1800, maxThrust: 12000, isp: 305, gravity: 1.625, x: 180, padRadius: 28 }
 };
 export function createState(config = PRESETS.training) {
   return { ...config, y: config.altitude, time: 0, angle: 0, throttle: 0, ax: 0, ay: -config.gravity, thrust: 0, flow: 0, status: 'ready', outcome: null };
@@ -51,8 +53,8 @@ export function step(s, dt) {
     s.time -= remainder;
     s.y = 0;
     const safe = Math.abs(s.vy) <= 2 && Math.abs(s.vx) <= 1 && Math.abs(s.angle) <= 8;
-    const onPad = Math.abs(s.x) <= 40;
-    s.outcome = { safe, onPad, vx: s.vx, vy: s.vy, angle: s.angle, x: s.x };
+    const onPad = Math.abs(s.x) <= (s.padRadius ?? 40);
+    s.outcome = { safe, onPad, vx: s.vx, vy: s.vy, angle: s.angle, x: s.x, thrust: s.thrust, flow: s.flow, ax: s.ax, ay: s.ay };
     s.status = safe ? 'landed' : 'crashed';
     s.thrust = 0;
     s.flow = 0;
