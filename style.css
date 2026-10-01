@@ -17,3 +17,68 @@
 .download-apk{text-decoration:none;color:var(--accent);border-color:#cbf77a55;white-space:nowrap}.android-app .download-apk{display:none}@media(max-width:800px){.page-heading{flex-wrap:wrap}.heading-actions{flex-wrap:wrap}.download-apk{font-size:10px;padding:10px 12px!important}}
 @media(pointer:coarse){.touch-controls{display:flex;position:absolute;left:16px;right:16px;bottom:62px;justify-content:space-between}.touch-controls>div{display:flex;gap:6px}.touch-controls button{height:42px;min-width:43px;border:1px solid #7794b34d;border-radius:8px;background:#142031c7;color:#d5e0ef;font-size:21px;touch-action:none;user-select:none}.touch-controls button small{display:block;font:6px var(--mono)}.touch-controls button:disabled{opacity:.25}}
 @media(max-height:500px) and (orientation:landscape){.flight-panel:fullscreen .flight-hud,.flight-panel:fullscreen .flight-advice{display:none}.flight-panel:fullscreen .panel-top{min-height:30px;padding:5px 15px}.flight-panel:fullscreen .flight-bottom{padding:8px 15px}.flight-panel:fullscreen .time-controls{padding:0 15px 8px}.flight-panel:fullscreen .scene-label,.flight-panel:fullscreen .scene-corner{top:12px}}
+
+/* Mobile cockpit keeps the live scene and the actual pilot inputs together. */
+.cockpit-only,.cockpit-dock{display:none}
+.mobile-layout .workspace{grid-template-columns:minmax(0,1fr)}
+.mobile-layout .control-panel{display:block}
+.mobile-layout .cockpit-dock{display:flex;flex-direction:column;gap:8px;padding:10px 16px;background:#181e25;border-top:1px solid var(--line)}
+.mobile-layout .cockpit-readout{display:flex;align-items:center;justify-content:space-between;color:var(--muted);font:10px var(--mono)}
+.mobile-layout .cockpit-readout b{color:var(--accent)}
+.mobile-layout .cockpit-readout button{min-height:28px;font-size:11px}
+.mobile-layout .mode-selector{margin:0;min-width:0}
+.mobile-layout .mode-selector button{min-height:34px;padding:6px 4px;font-size:11px}
+.mobile-layout #pilot-sliders{display:grid;gap:6px;min-width:0}
+.mobile-layout .slider-group{min-width:0}
+.mobile-layout .control-heading{margin:0 0 2px;font-size:12px}
+.mobile-layout .control-heading b{font-size:21px}
+.mobile-layout #pilot-sliders input[type=range]{width:100%;height:32px;margin:0;touch-action:none}
+.mobile-layout #pilot-sliders input[type=range]::-webkit-slider-thumb{width:26px;height:26px}
+.mobile-layout #pilot-sliders input[type=range]::-moz-range-thumb{width:26px;height:26px}
+.mobile-layout .range-caption{margin:0;font-size:9px;min-height:18px;align-items:center}
+.mobile-layout #level{min-height:26px;padding:0 8px;font-size:10px}
+.mobile-layout .flight-bottom>span{display:none}
+.mobile-layout .flight-bottom{padding:8px 16px}
+.mobile-layout #start{width:100%;min-height:42px}
+.mobile-layout .flight-panel,.mobile-layout .viewport{min-width:0}
+body.flight-focused{overflow:hidden}
+.flight-focused .flight-panel{position:fixed;inset:0;z-index:20;width:100%;height:100vh;height:100dvh;border:0;border-radius:0;display:flex;flex-direction:column;min-height:0;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+.flight-focused .panel-top{flex:none;min-height:38px;padding:5px 12px;gap:8px}
+.flight-focused .cockpit-only{display:block;min-height:30px;color:var(--accent);font-size:11px;white-space:nowrap}
+.flight-focused .panel-top>span:first-of-type{display:none}
+.flight-focused .view-tools{margin-left:auto}
+.flight-focused #fullscreen{display:none}
+.flight-focused .flight-panel .viewport{flex:1;min-height:120px;height:auto}
+.flight-focused .cockpit-dock,.flight-focused .flight-bottom,.flight-focused .flight-advice{flex:none}
+.flight-focused .flight-advice{padding:6px 16px;min-height:32px;font-size:10px;line-height:1.35}
+.flight-focused .time-controls{display:none}
+.flight-focused .scene-label{top:12px;left:12px}
+.flight-focused .scene-label small{display:none}
+.flight-focused .scene-corner{top:12px;right:12px;font-size:8px}
+.flight-focused .flight-hud{top:44px;left:12px;right:12px;gap:8px}
+.flight-focused .flight-hud span{font-size:7px}
+.flight-focused .flight-hud b{font-size:10px}
+.flight-focused .touch-controls{bottom:44px}
+.flight-focused .scale-label,.flight-focused .pad-label{bottom:13px;font-size:7px}
+@media(max-height:650px){
+  .flight-focused .cockpit-dock{padding:5px 12px;gap:3px}
+  .flight-focused .cockpit-readout{font-size:9px}
+  .flight-focused .control-heading b{font-size:18px}
+  .flight-focused .flight-hud{display:none}
+  .flight-focused .touch-controls button{height:32px;min-width:35px;font-size:17px}
+  .flight-focused .flight-bottom{padding:5px 12px}
+}
+@media(orientation:landscape) and (max-height:600px){
+  .flight-focused .flight-panel{display:grid;grid-template-columns:minmax(0,1fr) minmax(230px,35%);grid-template-rows:38px minmax(0,1fr) auto}
+  .flight-focused .panel-top{grid-column:1/-1}
+  .flight-focused .flight-panel .viewport{grid-column:1;grid-row:2/4;min-height:0}
+  .flight-focused .cockpit-dock{grid-column:2;grid-row:2;justify-content:center;border-top:0;border-left:1px solid var(--line);overflow:auto}
+  .flight-focused .flight-bottom{grid-column:2;grid-row:3;border-left:1px solid var(--line)}
+  .flight-focused .flight-advice{display:none}
+  .flight-focused .touch-controls{display:none}
+}
+@media(max-height:520px) and (orientation:portrait){
+  .flight-focused .flight-panel .viewport{min-height:80px}
+  .flight-focused .cockpit-dock{gap:2px}
+  .flight-focused .flight-advice{min-height:26px;padding:4px 12px;font-size:9px}
+}

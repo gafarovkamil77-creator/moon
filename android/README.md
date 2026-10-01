@@ -18,7 +18,7 @@ npm run build:apk
 
 Скрипт скачивает официальные Android Platform 35 и Build Tools 35.0.0, проверяя контрольные суммы из официального SDK repository. Можно указать путь к уже установленному SDK через `MOON_ANDROID_SDK`, `ANDROID_HOME` или `ANDROID_SDK_ROOT`. По умолчанию SDK располагается рядом с репозиторием в `moon-android-sdk/`.
 
-Результат: `android/build/MOON-2.0.0.apk` и `android/build/MOON-2.0.0.apk.sha256`. Проверяются подпись APK v2/v3, выравнивание и совпадение всех игровых assets с собранной веб-версией. Папки сборки и подписи исключены из Git.
+Результат: `android/build/MOON-2.0.1.apk` и `android/build/MOON-2.0.1.apk.sha256`. Проверяются подпись APK v2/v3, выравнивание и совпадение всех игровых assets с собранной веб-версией. Папки сборки и подписи исключены из Git.
 
 ## Подпись и обновления
 

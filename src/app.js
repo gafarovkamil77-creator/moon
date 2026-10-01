@@ -43,6 +43,31 @@ try {
     if (Array.isArray(saved.recent)) logbook.recent = saved.recent.filter(r => r && (Object.hasOwn(MISSION_INFO, r.mission) || r.mission === 'custom') && Object.hasOwn(modeNames, r.mode) && Number.isFinite(r.score) && r.score >= 0 && r.score <= 5000 && typeof r.safe === 'boolean' && typeof r.onPad === 'boolean').slice(0, 6);
   }
 } catch { storageAvailable = false; }
+// Keep a single set of inputs when switching between sidebar and mobile cockpit.
+const mobileLayout = window.matchMedia('(max-width: 800px), (pointer: coarse)');
+let cockpitScroll = 0;
+function openCockpit() {
+  if (!mobileLayout.matches || document.body.classList.contains('flight-focused')) return;
+  cockpitScroll = window.scrollY;
+  document.body.classList.add('flight-focused');
+}
+function closeCockpit() {
+  if (state.status === 'flying') toggleFlight();
+  held.clear();
+  document.body.classList.remove('flight-focused');
+  window.scrollTo(0, cockpitScroll);
+}
+function arrangeControls() {
+  document.body.classList.toggle('mobile-layout', mobileLayout.matches);
+  const dock = $('cockpit-dock');
+  (mobileLayout.matches ? dock : $('mode-home')).append($('mode-controls'));
+  (mobileLayout.matches ? dock : $('sliders-home')).append($('pilot-sliders'));
+  if (!mobileLayout.matches) document.body.classList.remove('flight-focused');
+}
+mobileLayout.addEventListener('change', arrangeControls);
+arrangeControls();
+$('leave-cockpit').addEventListener('click', closeCockpit);
+$('cockpit-retry').addEventListener('click', reset);
 const fixedDt = 1 / 120;
 const names = { ready: 'ОЖИДАНИЕ СТАРТА', flying: 'СПУСК НА ПОВЕРХНОСТЬ', paused: 'ПОЛЁТ ПРИОСТАНОВЛЕН', landed: 'КАСАНИЕ ПОВЕРХНОСТИ', crashed: 'АВАРИЙНАЯ ПОСАДКА' };
 
@@ -71,7 +96,7 @@ function reset() {
   update();
 }
 function toggleFlight() {
-  if (state.status === 'ready' || state.status === 'paused') { state.status = 'flying'; classify(); }
+  if (state.status === 'ready' || state.status === 'paused') { state.status = 'flying'; classify(); openCockpit(); }
   else if (state.status === 'flying') state.status = 'paused';
   else return;
   if (audio && state.status !== 'flying') engineGain.gain.setTargetAtTime(0, audio.currentTime, .08);
@@ -160,6 +185,7 @@ function toast(message) { $('toast').textContent = message; $('toast').hidden = 
 $('help').addEventListener('click', () => { if (state.status === 'flying') toggleFlight(); held.clear(); $('help-dialog').showModal(); });
 for (const id of ['close-help', 'help-start']) $(id).addEventListener('click', () => $('help-dialog').close());
 $('fullscreen').addEventListener('click', async () => {
+  if (mobileLayout.matches) { openCockpit(); return; }
   try {
     if (document.fullscreenElement) await document.exitFullscreen();
     else await document.querySelector('.flight-panel').requestFullscreen();
@@ -271,6 +297,7 @@ function update() {
   });
   const values = {
     height: fmt(state.y), vy: fmt(state.vy, 2), vx: fmt(state.vx, 2), ay: fmt(state.ay, 3), fuel: fmt(state.fuel, 0),
+    'cockpit-fuel': fmt(state.fuel, 0),
     'throttle-value': fmt(state.throttle, 0), 'angle-value': fmt(state.angle, 0),
     'hover-label': m.hover > 100 ? 'Зависание недоступно' : `Зависание ≈ ${fmt(m.hover, 0)}%`,
     offset: `Смещение от цели: ${fmt(state.x)} м`,

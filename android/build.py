@@ -15,7 +15,8 @@ ROOT = Path(__file__).resolve().parent.parent
 ANDROID = ROOT / "android"
 BUILD = ANDROID / "build"
 SDK = Path(os.environ.get("MOON_ANDROID_SDK") or os.environ.get("ANDROID_HOME") or os.environ.get("ANDROID_SDK_ROOT") or ROOT.parent / "moon-android-sdk").resolve()
-VERSION = "2.0.0"
+VERSION = "2.0.1"
+VERSION_CODE = 2
 
 
 def run(*args, cwd=ROOT):
@@ -73,7 +74,7 @@ def main():
     run(tools / "aapt2", "compile", "--dir", ANDROID / "res", "-o", BUILD / "resources.zip")
     run(tools / "aapt2", "link", "-o", BUILD / "unsigned.apk", "-I", android_jar,
         "--manifest", ANDROID / "AndroidManifest.xml", "-A", BUILD / "assets", BUILD / "resources.zip",
-        "--min-sdk-version", "26", "--target-sdk-version", "35", "--version-code", "1", "--version-name", VERSION)
+        "--min-sdk-version", "26", "--target-sdk-version", "35", "--version-code", str(VERSION_CODE), "--version-name", VERSION)
     sources = sorted((ANDROID / "src").rglob("*.java"))
     run("java", "-m", "jdk.compiler/com.sun.tools.javac.Main", "-encoding", "UTF-8", "-source", "8", "-target", "8",
         "-Xlint:-options", "-classpath", android_jar, "-d", BUILD / "classes", *sources)
