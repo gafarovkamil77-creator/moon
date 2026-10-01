@@ -1,4 +1,4 @@
-import { cp, mkdir, rm, writeFile } from 'node:fs/promises';
+import { cp, mkdir, rm, writeFile, access } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
 
@@ -10,4 +10,10 @@ for (const file of ['index.html', 'style.css', 'src/app.js', 'src/physics.js', '
   await cp(join(root, file), join(output, file));
 }
 await writeFile(join(output, '.nojekyll'), '');
+try {
+  await access(join(root, 'downloads'));
+  await cp(join(root, 'downloads'), join(output, 'downloads'), { recursive: true });
+} catch (error) {
+  if (error.code !== 'ENOENT') throw error;
+}
 console.log('Static site built in dist/');

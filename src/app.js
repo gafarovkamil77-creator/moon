@@ -2,6 +2,7 @@ import { PRESETS, createState, metrics, step } from './physics.js';
 import { MISSION_INFO, guidance, predictContact, landingScore, advice } from './game.js';
 
 const $ = id => document.getElementById(id);
+if (window.MoonAndroid) document.body.classList.add('android-app');
 const fmt = (v, digits = 1) => Number.isFinite(v) ? v.toLocaleString('ru-RU', { minimumFractionDigits: digits, maximumFractionDigits: digits }) : '∞';
 let config = { ...PRESETS.training };
 let state = createState(config);
@@ -139,6 +140,7 @@ document.addEventListener('keyup', e => {
 });
 window.addEventListener('blur', () => held.clear());
 document.addEventListener('visibilitychange', () => { held.clear(); if (document.hidden && state.status === 'flying') toggleFlight(); });
+window.addEventListener('moon-app-pause', () => { held.clear(); if (state.status === 'flying') toggleFlight(); });
 document.querySelectorAll('[data-hold]').forEach(button => {
   button.addEventListener('pointerdown', e => {
     e.preventDefault(); button.setPointerCapture(e.pointerId);
@@ -355,7 +357,7 @@ function drawScene() {
   c.fillStyle = '#b4bda57a'; c.beginPath(); c.ellipse(-4, -4, 6, 10, -.4, 0, Math.PI * 2); c.fill();
   c.fillStyle = '#0c111bd0'; c.beginPath(); c.ellipse(8, 1, 10, 15, 0, 0, Math.PI * 2); c.fill(); c.restore();
   const ground = h - 48;
-  const desiredScale = Math.min(3.4, (h - 180) / Math.max(state.y * 1.3 + 70, 140), (w - 120) / (Math.abs(state.x) + (config.padRadius ?? 40) * 2 + 90));
+  const desiredScale = Math.min(3.4, Math.max(45, h - 180) / Math.max(state.y * 1.3 + 70, 140), Math.max(80, w - 120) / (Math.abs(state.x) + (config.padRadius ?? 40) * 2 + 90));
   cameraScale = cameraScale ? cameraScale + (desiredScale - cameraScale) * (reducedMotion ? 1 : .07) : desiredScale;
   const scale = cameraScale;
   const center = state.x * .5;
@@ -479,6 +481,10 @@ function frame(now) {
 $('export').addEventListener('click', () => {
   const keys = ['time', 'x', 'altitude', 'vx', 'vy', 'fuel', 'throttle', 'angle', 'ax', 'ay'];
   const rows = [keys.join(','), ...history.map(row => keys.map(key => row[key].toFixed(4)).join(','))];
+  if (window.MoonAndroid && typeof window.MoonAndroid.saveTelemetry === 'function') {
+    window.MoonAndroid.saveTelemetry(rows.join('\n'));
+    return;
+  }
   const url = URL.createObjectURL(new Blob([rows.join('\n')], { type: 'text/csv;charset=utf-8' }));
   const link = document.createElement('a'); link.href = url; link.download = 'moon-telemetry.csv'; link.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);

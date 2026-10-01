@@ -70,3 +70,11 @@ ay = F cos(θ) / m − g
 Для GitHub Pages в Settings → Pages выберите Source: **GitHub Actions**. Workflow `.github/workflows/pages.yml` проверяет физическую модель, собирает сайт и публикует его при отправке изменений в `main`. При первом включении Pages для уже отправленного коммита запустите workflow через Actions → Publish simulator to GitHub Pages → Run workflow.
 
 Адрес сайта: `https://gafarovkamil77-creator.github.io/moon/`. Изменения становятся доступны после успешного завершения workflow публикации.
+
+## Android APK
+
+Мобильное приложение работает автономно, без интернета: игра включена в APK. Поддерживаются Android 8.0+ с актуальным Android System WebView/Chrome (100+). При сворачивании полёт ставится на паузу, поворот экрана сохраняет игру, а CSV экспортируется через системный выбор файла. Рекорды приложения сохраняются на телефоне отдельно от браузерной версии.
+
+Скачать: `https://gafarovkamil77-creator.github.io/moon/downloads/MOON-2.0.0.apk`.
+
+Сборка из исходников в Linux: `npm run build:apk`. Подробности и правила хранения ключа подписи — в [android/README.md](android/README.md).
